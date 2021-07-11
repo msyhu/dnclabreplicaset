@@ -116,3 +116,8 @@ func getSortedPodNames(pods []corev1.Pod) []string {
 	sort.Strings(podNames)
 	return podNames
 }
+
+// pod 갯수 구하는 핵심 로직이 들어갈 함수
+func getNumOfPods() int {
+	return 5
+}
