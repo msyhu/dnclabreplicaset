@@ -1,0 +1,7 @@
+apiVersion: mycore.ds.korea.ac.kr/v1
+kind: DnclabReplicaSet
+metadata:
+  name: nginx
+spec:
+  name: nginx
+  image: nginx:latest
