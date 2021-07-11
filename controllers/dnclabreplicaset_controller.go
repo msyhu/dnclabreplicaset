@@ -54,10 +54,11 @@ type DnclabReplicaSetReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
-func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *DnclabReplicaSetReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	//_ = log.FromContext(ctx)
 	_ = context.Background()
 	log := r.Log.WithValues("dnclabreplicaset", req.NamespacedName)
+	log.Info("dnclabreplicaset reconcile")
 
 	// your logic here
 	// Get DnclabReplicaSet
