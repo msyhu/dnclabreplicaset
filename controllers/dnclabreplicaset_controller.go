@@ -21,6 +21,7 @@ import (
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"math/rand"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sort"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -31,6 +32,7 @@ import (
 	mycorev1 "ds.korea.ac.kr/dnclabreplicaset/api/v1"
 
 	corev1 "k8s.io/api/core/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // DnclabReplicaSetReconciler reconciles a DnclabReplicaSet object
@@ -80,6 +82,41 @@ func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	if err != nil {
 		log.Error(err, "failed to get pod list", "DsReplicaset Namespace", drs.Namespace, "name", drs.Name)
 		return ctrl.Result{}, err
+	}
+
+	// Create or Delete Pod
+	replicaDiff := getNumOfPods() - len(podList.Items)
+	if replicaDiff > 0 {
+		for i := 0; i < replicaDiff; i++ {
+			// set pod
+			pod := &corev1.Pod{
+				ObjectMeta: v1.ObjectMeta{
+					Namespace: drs.Namespace,
+					Name:      getRandomPodName(drs.Name),
+					Labels:    labelsForDsReplicaSet(drs.Name),
+				},
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{{
+						Name:  drs.Spec.Name,
+						Image: drs.Spec.Image,
+					}},
+				},
+			}
+			if err := ctrl.SetControllerReference(drs, pod, r.Scheme); err != nil {
+				log.Error(err, "failed to set controller reference for the pod.",
+					"DnclabReplicaSet Namespace", drs.Namespace, "Name", drs.Name)
+				return ctrl.Result{}, err
+			}
+
+			// Create Pod
+			if err = r.Client.Create(context.TODO(), pod); err != nil {
+				log.Error(err, "failed to create the pod.",
+					"DnclabReplicaSet Namespace", drs.Namespace, "Name", drs.Name)
+				return ctrl.Result{}, err
+			}
+		}
+
+		return reconcile.Result{Requeue: true}, nil
 	}
 
 	return ctrl.Result{}, nil
