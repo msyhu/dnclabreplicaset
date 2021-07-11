@@ -11,3 +11,6 @@ dnclabreplicaset
 - make run
 - kubebuilder init --domain ds.korea.ac.kr
 - kubebuilder create api --group mycore --version v1 --kind DnclabReplicaSet
+
+## reference
+- https://if.kakao.com/session/101
