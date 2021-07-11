@@ -1,0 +1,16 @@
+domain: ds.korea.ac.kr
+layout:
+- go.kubebuilder.io/v3
+projectName: dnclabreplicaset
+repo: ds.korea.ac.kr/dnclabreplicaset
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: ds.korea.ac.kr
+  group: mycore
+  kind: DnclabReplicaSet
+  path: ds.korea.ac.kr/dnclabreplicaset/api/v1
+  version: v1
+version: "3"

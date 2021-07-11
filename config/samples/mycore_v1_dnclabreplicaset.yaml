@@ -1,0 +1,7 @@
+apiVersion: mycore.ds.korea.ac.kr/v1
+kind: DnclabReplicaSet
+metadata:
+  name: dnclabreplicaset-sample
+spec:
+  # Add fields here
+  foo: bar

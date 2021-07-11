@@ -1,0 +1,24 @@
+# permissions for end users to edit dnclabreplicasets.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dnclabreplicaset-editor-role
+rules:
+- apiGroups:
+  - mycore.ds.korea.ac.kr
+  resources:
+  - dnclabreplicasets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - mycore.ds.korea.ac.kr
+  resources:
+  - dnclabreplicasets/status
+  verbs:
+  - get
