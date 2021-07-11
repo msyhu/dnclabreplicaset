@@ -33,6 +33,7 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"reflect"
 )
 
 // DnclabReplicaSetReconciler reconciles a DnclabReplicaSet object
@@ -117,6 +118,40 @@ func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		}
 
 		return reconcile.Result{Requeue: true}, nil
+
+	} else if replicaDiff < 0 {
+		podNames := getSortedPodNames(podList.Items)
+		for i := 0; i < -replicaDiff; i++ {
+			pod := &corev1.Pod{
+				ObjectMeta: v1.ObjectMeta{
+					Namespace: drs.Namespace,
+					Name:      podNames[i],
+				},
+			}
+
+			// delete pod
+			err = r.Client.Delete(context.TODO(), pod)
+			if err != nil {
+				if !errors.IsNotFound(err) {
+					log.Error(err, "failed to delete the pod.",
+						"DnclabReplicaSet Namespace", drs.Namespace, "Name", drs.Name)
+					return ctrl.Result{}, err
+				}
+			}
+		}
+
+		return reconcile.Result{Requeue: true}, nil
+	}
+
+	// update DnclabReplicaSet status
+	podNames := getSortedPodNames(podList.Items)
+	if !reflect.DeepEqual(podNames, drs.Status.PodNames) {
+		drs.Status.PodNames = podNames
+		err := r.Client.Status().Update(context.TODO(), drs)
+		if err != nil {
+			log.Error(err, "failed to update DnclabReplicaset status")
+			return ctrl.Result{}, err
+		}
 	}
 
 	return ctrl.Result{}, nil
