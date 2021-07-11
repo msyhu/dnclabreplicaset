@@ -20,6 +20,8 @@ import (
 	"context"
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/api/errors"
+	"math/rand"
+	"sort"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -93,5 +95,24 @@ func (r *DnclabReplicaSetReconciler) SetupWithManager(mgr ctrl.Manager) error {
 // labelsForDsReplicaSet returns the labels for selecting the resources
 // belonging to the given dsreplicaset CR name.
 func labelsForDsReplicaSet(name string) map[string]string {
-	return map[string]string{"app": "dsreplicaset", "dsreplicaset_cr": name}
+	return map[string]string{"dsreplicaset": name}
+}
+
+func getRandomPodName(name string) string {
+	var letters = []rune("0123456789abcdefghijklmnopqrstuvwxyz")
+	b := make([]rune, 10)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+
+	return "dsreplicaset-" + name + "-" + string(b)
+}
+
+func getSortedPodNames(pods []corev1.Pod) []string {
+	var podNames []string
+	for _, pod := range pods {
+		podNames = append(podNames, pod.Name)
+	}
+	sort.Strings(podNames)
+	return podNames
 }
