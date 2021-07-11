@@ -27,15 +27,15 @@ import (
 type DnclabReplicaSetSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of DnclabReplicaSet. Edit dnclabreplicaset_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Name  string `json:"name"`
+	Image string `json:"image"`
 }
 
 // DnclabReplicaSetStatus defines the observed state of DnclabReplicaSet
 type DnclabReplicaSetStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	PodNames []string `json:"podNames"`
 }
 
 //+kubebuilder:object:root=true
