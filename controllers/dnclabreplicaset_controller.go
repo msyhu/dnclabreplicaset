@@ -57,7 +57,7 @@ type DnclabReplicaSetReconciler struct {
 func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	//_ = log.FromContext(ctx)
 	_ = context.Background()
-	log := r.Log.WithValues("DnclabReplicaSet", req.NamespacedName)
+	log := r.Log.WithValues("dnclabreplicaset", req.NamespacedName)
 
 	// your logic here
 	// Get DnclabReplicaSet
