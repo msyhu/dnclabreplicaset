@@ -58,7 +58,7 @@ type DnclabReplicaSetReconciler struct {
 func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 	//_ = context.Background()
-	//drsLogger := r.Log.WithValues("dnclabreplicaset", req.NamespacedName)
+	drsLogger := r.Log.WithValues("dnclabreplicaset", req.NamespacedName)
 
 	// your logic here
 	// Get DnclabReplicaSet
@@ -81,7 +81,7 @@ func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	}
 	err = r.Client.List(context.TODO(), podList, listOps...)
 	if err != nil {
-		//drsLogger.Error(err, "failed to get pod list", "DsReplicaset Namespace", drs.Namespace, "name", drs.Name)
+		drsLogger.Error(err, "failed to get pod list", "DsReplicaset Namespace", drs.Namespace, "name", drs.Name)
 		return ctrl.Result{}, err
 	}
 
