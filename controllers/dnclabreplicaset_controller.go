@@ -24,6 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sort"
+	"strconv"
 
 	mycorev1 "ds.korea.ac.kr/dnclabreplicaset/api/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -192,6 +193,7 @@ func getSortedPodNames(pods []corev1.Pod) []string {
 // pod 갯수 구하는 핵심 로직이 들어갈 함수
 func getNumOfPods(drsLogger logr.Logger) int {
 	numOfPods := rand.Intn(5) + 1
-	drsLogger.Info("이번 pod 개수 : ", numOfPods)
+	numOfPodsStr := "이번 Pod 개수 : " + strconv.Itoa(numOfPods)
+	drsLogger.Info(numOfPodsStr)
 	return numOfPods
 }
