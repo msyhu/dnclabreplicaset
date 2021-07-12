@@ -155,6 +155,8 @@ func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		}
 	}
 
+	drsLogger.Info("DnclabReplicSet controller is successfully reconciled!")
+
 	return ctrl.Result{}, nil
 }
 
