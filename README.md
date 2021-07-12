@@ -1,5 +1,6 @@
 # dnclabreplicaset
-dnclabreplicaset
+## 목표
+Pod 개수를 계산해주는 특정 공식 or AI 기법이 구현되어있는 파이썬 서버에 주기적으로 Pod 개수를 질의한 후, 그 개수에 맞추어 Pod 개수를 조절하는 custom controller 를 구현한다.
 
 ![image](https://user-images.githubusercontent.com/81010357/125193006-5769a080-e285-11eb-8487-5aa623d8de85.png)
 ![image](https://user-images.githubusercontent.com/81010357/125193035-6e0ff780-e285-11eb-99ec-6c014cfa4404.png)
