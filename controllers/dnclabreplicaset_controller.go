@@ -69,7 +69,7 @@ func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Req
 			return ctrl.Result{}, nil
 		}
 
-		//drsLogger.Error(err, "failed to get drs")
+		drsLogger.Error(err, "failed to get drs")
 		return ctrl.Result{}, err
 	}
 
@@ -86,7 +86,7 @@ func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	}
 
 	// Create or Delete Pod
-	replicaDiff := getNumOfPods() - len(podList.Items)
+	replicaDiff := getNumOfPods(drsLogger) - len(podList.Items)
 	if replicaDiff > 0 {
 		for i := 0; i < replicaDiff; i++ {
 			// set pod
@@ -104,15 +104,15 @@ func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Req
 				},
 			}
 			if err := ctrl.SetControllerReference(drs, pod, r.Scheme); err != nil {
-				//drsLogger.Error(err, "failed to set controller reference for the pod.",
-				//	"DnclabReplicaSet Namespace", drs.Namespace, "Name", drs.Name)
+				drsLogger.Error(err, "failed to set controller reference for the pod.",
+					"DnclabReplicaSet Namespace", drs.Namespace, "Name", drs.Name)
 				return ctrl.Result{}, err
 			}
 
 			// Create Pod
 			if err = r.Client.Create(context.TODO(), pod); err != nil {
-				//drsLogger.Error(err, "failed to create the pod.",
-				//	"DnclabReplicaSet Namespace", drs.Namespace, "Name", drs.Name)
+				drsLogger.Error(err, "failed to create the pod.",
+					"DnclabReplicaSet Namespace", drs.Namespace, "Name", drs.Name)
 				return ctrl.Result{}, err
 			}
 		}
@@ -133,8 +133,8 @@ func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Req
 			err = r.Client.Delete(context.TODO(), pod)
 			if err != nil {
 				if !errors.IsNotFound(err) {
-					//drsLogger.Error(err, "failed to delete the pod.",
-					//	"DnclabReplicaSet Namespace", drs.Namespace, "Name", drs.Name)
+					drsLogger.Error(err, "failed to delete the pod.",
+						"DnclabReplicaSet Namespace", drs.Namespace, "Name", drs.Name)
 					return ctrl.Result{}, err
 				}
 			}
@@ -149,7 +149,7 @@ func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		drs.Status.PodNames = podNames
 		err := r.Client.Status().Update(context.TODO(), drs)
 		if err != nil {
-			//drsLogger.Error(err, "failed to update DnclabReplicaset status")
+			drsLogger.Error(err, "failed to update DnclabReplicaset status")
 			return ctrl.Result{}, err
 		}
 	}
@@ -190,6 +190,8 @@ func getSortedPodNames(pods []corev1.Pod) []string {
 }
 
 // pod 갯수 구하는 핵심 로직이 들어갈 함수
-func getNumOfPods() int {
-	return rand.Intn(5) + 1
+func getNumOfPods(drsLogger logr.Logger) int {
+	numOfPods := rand.Intn(5) + 1
+	drsLogger.Info("이번 pod 개수 : ", numOfPods)
+	return numOfPods
 }
