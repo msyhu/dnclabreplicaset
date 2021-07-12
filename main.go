@@ -81,6 +81,7 @@ func main() {
 	if err = (&controllers.DnclabReplicaSetReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
+		Log:    ctrl.Log.WithName("controllers").WithName("DnclabReplicaSet"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "DnclabReplicaSet")
 		os.Exit(1)
