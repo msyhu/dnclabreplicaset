@@ -67,6 +67,7 @@ func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	err := r.Client.Get(context.TODO(), req.NamespacedName, drs)
 	if err != nil {
 		if errors.IsNotFound(err) {
+			drsLogger.Info("dnclabreplicaset resource not found")
 			return ctrl.Result{}, nil
 		}
 
@@ -88,6 +89,9 @@ func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Req
 
 	// Create or Delete Pod
 	replicaDiff := getNumOfPods(drsLogger) - len(podList.Items)
+	replicaDiffStrMsg := "replicaDiff : " + strconv.Itoa(replicaDiff)
+	drsLogger.Info(replicaDiffStrMsg)
+
 	if replicaDiff > 0 {
 		for i := 0; i < replicaDiff; i++ {
 			// set pod
@@ -146,6 +150,7 @@ func (r *DnclabReplicaSetReconciler) Reconcile(ctx context.Context, req ctrl.Req
 
 	// update DnclabReplicaSet status
 	podNames := getSortedPodNames(podList.Items)
+
 	if !reflect.DeepEqual(podNames, drs.Status.PodNames) {
 		drs.Status.PodNames = podNames
 		err := r.Client.Status().Update(context.TODO(), drs)
