@@ -190,8 +190,8 @@ func getSortedPodNames(pods []corev1.Pod) []string {
 
 // pod 갯수 구하는 핵심 로직이 들어갈 함수
 func getNumOfPods(drsLogger logr.Logger) int {
-	//numOfPods := rand.Intn(5) + 1
-	numOfPods := 5
+	numOfPods := rand.Intn(5) + 1
+	//numOfPods := 5
 	numOfPodsStr := "이번 Pod 개수 : " + strconv.Itoa(numOfPods)
 	drsLogger.Info(numOfPodsStr)
 	return numOfPods
